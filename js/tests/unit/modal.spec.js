@@ -867,7 +867,7 @@ describe('Modal', () => {
       modal.dispose()
 
       expect(Modal.getInstance(modalEl)).toEqual(null)
-      expect(EventHandler.off).toHaveBeenCalledTimes(4)
+      expect(EventHandler.off).toHaveBeenCalledTimes(5) // 4 for modal and 1 for backdrop
     })
   })
 
