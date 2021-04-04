@@ -49,6 +49,7 @@ const EVENT_HIDDEN = `hidden${EVENT_KEY}`
 const EVENT_FOCUSIN = `focusin${EVENT_KEY}`
 const EVENT_CLICK_DATA_API = `click${EVENT_KEY}${DATA_API_KEY}`
 const EVENT_CLICK_DISMISS = `click.dismiss${EVENT_KEY}`
+const EVENT_KEYDOWN_DISMISS = `keydown.dismiss${EVENT_KEY}`
 
 const SELECTOR_DATA_DISMISS = '[data-bs-dismiss="offcanvas"]'
 const SELECTOR_DATA_TOGGLE = '[data-bs-toggle="offcanvas"]'
@@ -133,14 +134,13 @@ class Offcanvas extends BaseComponent {
     this._element.blur()
     this._isShown = false
     this._element.classList.remove(CLASS_NAME_SHOW)
+    this._backdrop.hide()
 
     const completeCallback = () => {
       this._element.setAttribute('aria-hidden', true)
       this._element.removeAttribute('aria-modal')
       this._element.removeAttribute('role')
       this._element.style.visibility = 'hidden'
-
-      this._backdrop.hide()
 
       if (!this._config.scroll) {
         scrollBarReset()
@@ -155,6 +155,13 @@ class Offcanvas extends BaseComponent {
   dispose() {
     this._backdrop.dispose()
     super.dispose()
+
+    /**
+     * `document` has 2 events `EVENT_FOCUSIN` and `EVENT_CLICK_DATA_API`
+     * Do not move `document` in `htmlElements` array
+     * It will remove `EVENT_CLICK_DATA_API` event that should remain
+     */
+    EventHandler.off(document, EVENT_FOCUSIN)
 
     this._config = null
     this._backdrop = null
@@ -197,7 +204,7 @@ class Offcanvas extends BaseComponent {
   _addEventListeners() {
     EventHandler.on(this._element, EVENT_CLICK_DISMISS, SELECTOR_DATA_DISMISS, () => this.hide())
 
-    EventHandler.on(document, 'keydown', event => {
+    EventHandler.on(this._element, EVENT_KEYDOWN_DISMISS, event => {
       if (this._config.keyboard && event.key === ESCAPE_KEY) {
         this.hide()
       }
