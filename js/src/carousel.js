@@ -12,6 +12,7 @@ import {
   getTransitionDurationFromElement,
   isRTL,
   isVisible,
+  pickFromList,
   reflow,
   triggerTransitionEnd,
   typeCheckConfig
@@ -351,21 +352,7 @@ class Carousel extends BaseComponent {
 
   _getItemByOrder(order, activeElement) {
     const isNext = order === ORDER_NEXT
-    const isPrev = order === ORDER_PREV
-    const activeIndex = this._getItemIndex(activeElement)
-    const lastItemIndex = this._items.length - 1
-    const isGoingToWrap = (isPrev && activeIndex === 0) || (isNext && activeIndex === lastItemIndex)
-
-    if (isGoingToWrap && !this._config.wrap) {
-      return activeElement
-    }
-
-    const delta = isPrev ? -1 : 1
-    const itemIndex = (activeIndex + delta) % this._items.length
-
-    return itemIndex === -1 ?
-      this._items[this._items.length - 1] :
-      this._items[itemIndex]
+    return pickFromList(this._items, activeElement, isNext, this._config.wrap)
   }
 
   _triggerSlideEvent(relatedTarget, eventDirectionName) {

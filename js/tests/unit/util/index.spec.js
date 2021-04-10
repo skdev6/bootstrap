@@ -568,4 +568,43 @@ describe('Util', () => {
       expect(typeof fakejQuery.fn.test.noConflict).toEqual('function')
     })
   })
+
+  describe('pickFromList', () => {
+    it('should return first element if active not exists or not given', () => {
+      const array = ['a', 'b', 'c', 'd']
+
+      expect(Util.pickFromList(array, '')).toEqual('a')
+      expect(Util.pickFromList(array, 'g')).toEqual('a')
+    })
+
+    it('should return next element or same if is last', () => {
+      const array = ['a', 'b', 'c', 'd']
+
+      expect(Util.pickFromList(array, 'a')).toEqual('b')
+      expect(Util.pickFromList(array, 'b')).toEqual('c')
+      expect(Util.pickFromList(array, 'd', true, false)).toEqual('d')
+    })
+
+    it('should return next element or first, if is last and "allowCycle = true"', () => {
+      const array = ['a', 'b', 'c', 'd']
+
+      expect(Util.pickFromList(array, 'c')).toEqual('d')
+      expect(Util.pickFromList(array, 'd')).toEqual('a')
+    })
+
+    it('should return previous element or same if is first', () => {
+      const array = ['a', 'b', 'c', 'd']
+
+      expect(Util.pickFromList(array, 'b', false)).toEqual('a')
+      expect(Util.pickFromList(array, 'd', false)).toEqual('c')
+      expect(Util.pickFromList(array, 'a', false, false)).toEqual('a')
+    })
+
+    it('should return next element or first, if is last and "allowCycle = true"', () => {
+      const array = ['a', 'b', 'c', 'd']
+
+      expect(Util.pickFromList(array, 'd', false)).toEqual('c')
+      expect(Util.pickFromList(array, 'a', false)).toEqual('d')
+    })
+  })
 })

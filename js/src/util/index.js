@@ -230,6 +230,37 @@ const defineJQueryPlugin = (name, plugin) => {
   })
 }
 
+/**
+ * Return the prev/next element of a list.
+ *
+ * @param {array} list The list of elements
+ * @param activeElement The active element
+ * @param getNext Choose to get next or previous element
+ * @param allowCycle
+ * @return {Element|elem}  The proper element
+ */
+const pickFromList = (list, activeElement = null, getNext = true, allowCycle = true) => {
+  let index = list.indexOf(activeElement)
+
+  if (index === -1) {// ensure index, if element not exists in list initialize it as first element
+    return list[0]
+  }
+
+  const listLength = list.length
+
+  if (allowCycle) {
+    const newIndex = (getNext ? ++index : --index + listLength) % listLength // trick for cycling
+
+    return list[newIndex]
+  }
+
+  if (getNext) {
+    return ++index >= listLength ? list[listLength - 1] : list[index]
+  }
+
+  return --index < 0 ? list[0] : list[index]
+}
+
 export {
   getUID,
   getSelectorFromElement,
@@ -247,5 +278,6 @@ export {
   getjQuery,
   onDOMContentLoaded,
   isRTL,
-  defineJQueryPlugin
+  defineJQueryPlugin,
+  pickFromList
 }

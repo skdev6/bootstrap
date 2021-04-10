@@ -15,6 +15,7 @@ import {
   isVisible,
   isRTL,
   noop,
+  pickFromList,
   typeCheckConfig
 } from './util/index'
 import Data from './dom/data'
@@ -357,28 +358,17 @@ class Dropdown extends BaseComponent {
   }
 
   _selectMenuItem(event) {
+    if (![ARROW_UP_KEY, ARROW_DOWN_KEY].includes(event.key)) {
+      return
+    }
+
     const items = SelectorEngine.find(SELECTOR_VISIBLE_ITEMS, this._menu).filter(isVisible)
 
     if (!items.length) {
       return
     }
 
-    let index = items.indexOf(event.target)
-
-    // Up
-    if (event.key === ARROW_UP_KEY && index > 0) {
-      index--
-    }
-
-    // Down
-    if (event.key === ARROW_DOWN_KEY && index < items.length - 1) {
-      index++
-    }
-
-    // index is -1 if the first keydown is an ArrowUp
-    index = index === -1 ? 0 : index
-
-    items[index].focus()
+    pickFromList(items, event.target, event.key === ARROW_DOWN_KEY, false).focus()
   }
 
   // Static
