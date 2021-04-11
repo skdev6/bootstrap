@@ -164,9 +164,9 @@ describe('Backdrop', () => {
 
       const instance = new Backdrop({
         isVisible: true,
-        isAnimated: false
+        isAnimated: false,
+        clickCallback: () => spy()
       })
-      instance.onClick(() => spy())
       const endTest = () => {
         setTimeout(() => {
           expect(spy).toHaveBeenCalled()
