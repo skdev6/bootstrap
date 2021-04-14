@@ -249,17 +249,13 @@ const pickFromList = (list, activeElement = null, getNext = true, allowCycle = t
 
   const listLength = list.length
 
+  index += getNext ? 1 : -1
+
   if (allowCycle) {
-    const newIndex = (getNext ? ++index : --index + listLength) % listLength // trick for cycling
-
-    return list[newIndex]
+    index = (index + listLength) % listLength
   }
 
-  if (getNext) {
-    return ++index >= listLength ? list[listLength - 1] : list[index]
-  }
-
-  return --index < 0 ? list[0] : list[index]
+  return list[Math.max(0, Math.min(index, listLength - 1))]
 }
 
 export {
